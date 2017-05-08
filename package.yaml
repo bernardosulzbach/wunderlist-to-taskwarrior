@@ -37,6 +37,9 @@ github: githubuser/wunderlist-to-warrior
 library:
   dependencies:
   - base
+  - aeson
+  - http-client
+  - http-conduit
   source-dirs: library
 license: MIT
 maintainer: Author name here
