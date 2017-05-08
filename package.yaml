@@ -1,0 +1,58 @@
+# This YAML file describes your package. Stack will automatically generate a
+# Cabal file when you run `stack build`. See the hpack website for help with
+# this file: <https://github.com/sol/hpack>.
+benchmarks:
+  wunderlist-to-warrior-benchmarks:
+    dependencies:
+    - base
+    - wunderlist-to-warrior
+    - criterion
+    ghc-options:
+    - -rtsopts
+    - -threaded
+    - -with-rtsopts=-N
+    main: Main.hs
+    source-dirs: benchmark
+category: Other
+description: wunderlist-to-warrior is a new Haskeleton package.
+executables:
+  wunderlist-to-warrior:
+    dependencies:
+    - base
+    - wunderlist-to-warrior
+    ghc-options:
+    - -rtsopts
+    - -threaded
+    - -with-rtsopts=-N
+    main: Main.hs
+    source-dirs: executable
+extra-source-files:
+- CHANGELOG.md
+- LICENSE.md
+- package.yaml
+- README.md
+- stack.yaml
+ghc-options: -Wall
+github: githubuser/wunderlist-to-warrior
+library:
+  dependencies:
+  - base
+  source-dirs: library
+license: MIT
+maintainer: Author name here
+name: wunderlist-to-warrior
+synopsis: A new Haskeleton package.
+tests:
+  wunderlist-to-warrior-test-suite:
+    dependencies:
+    - base
+    - wunderlist-to-warrior
+    - tasty
+    - tasty-hspec
+    ghc-options:
+    - -rtsopts
+    - -threaded
+    - -with-rtsopts=-N
+    main: Main.hs
+    source-dirs: test-suite
+version: '0.0.0'
