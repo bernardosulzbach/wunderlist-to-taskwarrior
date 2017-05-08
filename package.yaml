@@ -43,7 +43,9 @@ library:
   - aeson
   - bytestring
   - containers
+  - directory
   - exceptions
+  - filepath
   - http-client
   - http-conduit
   - text
