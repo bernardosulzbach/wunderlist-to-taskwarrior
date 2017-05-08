@@ -12,10 +12,9 @@ baseFetchListsRequest = "GET http://a.wunderlist.com/api/v1/lists"
 
 fetchLists :: User.User -> IO ()
 fetchLists user = do
-  let request = setRequestHeader "X-Access-Token" [C8.pack $ User.accessToken user] $ setRequestHeader
-                                                                                        "X-Client-ID"
-                                                                                        [ C8.pack $ User.clientId
-                                                                                                      user
-                                                                                        ] $ baseFetchListsRequest
+  let base = baseFetchListsRequest
+  let token = [C8.pack (User.accessToken user)]
+  let id = [C8.pack (User.clientId user)]
+  let request = setRequestHeader "X-Access-Token" token $ setRequestHeader "X-Client-ID" id $ base
   response <- httpJSON request
   print $ (getResponseBody response :: [Wunderlist.List])
