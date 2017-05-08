@@ -2,19 +2,50 @@
 
 module Fetcher where
 
+import           Control.Monad.Catch
+import           Data.Aeson
 import qualified Data.ByteString.Char8 as C8
+import qualified Data.ByteString.Lazy  as LBS
+import qualified Data.Map              as Map
+import qualified Data.Text             as Text
 import           Network.HTTP.Simple
 import qualified User
-import qualified Wunderlist
+import qualified Wunderlist.List
+import qualified Wunderlist.Task
 
-baseFetchListsRequest :: Request
-baseFetchListsRequest = "GET http://a.wunderlist.com/api/v1/lists"
+listsRequest :: Request
+listsRequest = "GET http://a.wunderlist.com/api/v1/lists"
 
-fetchLists :: User.User -> IO ()
+tasksRequest :: Request
+tasksRequest = "GET http://a.wunderlist.com/api/v1/tasks"
+
+fillRequest :: User.User -> Request -> Request
+fillRequest user request = withEverything
+  where
+    clientId = [C8.pack (User.clientId user)]
+    withClientId = setRequestHeader "X-Client-ID" clientId request
+    accessToken = [C8.pack (User.accessToken user)]
+    withEverything = setRequestHeader "X-Access-Token" accessToken $ withClientId
+
+fetchLists :: User.User -> IO [Wunderlist.List.List]
 fetchLists user = do
-  let base = baseFetchListsRequest
-  let token = [C8.pack (User.accessToken user)]
-  let id = [C8.pack (User.clientId user)]
-  let request = setRequestHeader "X-Access-Token" token $ setRequestHeader "X-Client-ID" id $ base
+  let request = fillRequest user listsRequest
   response <- httpJSON request
-  print $ (getResponseBody response :: [Wunderlist.List])
+  return (getResponseBody response :: [Wunderlist.List.List])
+
+fetchInbox :: User.User -> IO Wunderlist.List.List
+fetchInbox user = do
+  lists <- fetchLists user
+  return $ head $ filter nameIsInbox lists
+
+  where
+    nameIsInbox list = (Wunderlist.List.title list) == "inbox"
+
+fetchTasks :: User.User -> Wunderlist.List.List -> IO [Wunderlist.Task.Task]
+fetchTasks user list = do
+  let listId = Wunderlist.List.id list
+  let baseRequest = fillRequest user tasksRequest
+  let requestBody = Map.fromList [("list_id" :: Text.Text, listId)]
+  let request = setRequestBodyJSON requestBody request
+  response <- httpJSON request
+  return (getResponseBody response :: [Wunderlist.Task.Task])

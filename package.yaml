@@ -42,6 +42,9 @@ library:
   - http-client
   - http-conduit
   - bytestring
+  - exceptions
+  - text
+  - containers
   source-dirs: library
 license: MIT
 maintainer: Author name here
