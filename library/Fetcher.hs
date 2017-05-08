@@ -3,6 +3,7 @@
 module Fetcher where
 
 import           Data.Aeson
+import           Data.ByteString.Lazy as LBS
 import           Network.HTTP.Client
 import           User
 
@@ -14,10 +15,9 @@ buildRequest url body = do
   nakedRequest <- parseRequest url
   return (nakedRequest { method = "POST", requestBody = body })
 
-send :: RequestBody -> IO ()
+send :: RequestBody -> IO LBS.ByteString
 send s = do
-  manager <- newManager defaultManagerSettings
   request <- buildRequest "http://httpbin.org/post" s
+  manager <- newManager defaultManagerSettings
   response <- httpLbs request manager
-  let Just obj = decode (responseBody response)
-  print (obj :: Object)
+  return (responseBody response)

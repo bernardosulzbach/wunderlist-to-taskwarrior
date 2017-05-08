@@ -20,6 +20,7 @@ executables:
     dependencies:
     - base
     - wunderlist-to-warrior
+    - bytestring
     ghc-options:
     - -rtsopts
     - -threaded
@@ -40,6 +41,7 @@ library:
   - aeson
   - http-client
   - http-conduit
+  - bytestring
   source-dirs: library
 license: MIT
 maintainer: Author name here
