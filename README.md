@@ -1,37 +1,33 @@
-# [wunderlist-to-warrior][]
+# Wunderlist to Warrior
 
-Thanks for starting a project with Haskeleton! If you haven't heard of it
-before, I suggest reading the introductory blog post. You can find it here:
-<http://taylor.fausak.me/2014/03/04/haskeleton-a-haskell-project-skeleton/>.
+## Configuration
 
-Before you get started, there are a few things that this template couldn't
-provide for you. You should:
+You must get an API key from Wunderlist before using this for your own stuff.
 
--   Add a synopsis to `package.yaml`. It should be a short (one sentence)
-    explanation of your project.
+Create a file at `~/.tokens.json` file with the following contents:
 
--   Add a description to `package.yaml`. This can be whatever you want it to
-    be.
+```javascript
+{
+   "clientId":     "6502................",
+   "clientSecret": "2684........................................................",
+   "accessToken":  "bcc4........................................................"
+}
+```
 
--   Add a category to `package.yaml`. A list of categories is available on
-    Hackage at <http://hackage.haskell.org/packages>.
+Note that you must obtain these values for yourself, the dots are just there to
+give you an idea of how long each field is.
 
--   Rename `library/Example.hs` to whatever you want your top-level module to
-    be called. Typically this is the same as your package name but in
-    `CamelCase` instead of `kebab-case`.
+## Installation
 
-    -   Don't forget to rename the reference to it in
-        `executable/Main.hs`!
+A simple project that fetches your tasks from Wunderlist and inserts them into
+TaskWarrior.
 
--   If you are on an older version of Stack (<1.0.4), delete `package.yaml` and
-    remove `/*.cabal` from your `.gitignore`.
-
-Once you've done that, start working on your project with the Stack commands
-you know and love.
-
-``` sh
+```sh
 # Build the project.
 stack build
+
+# Install the executable.
+stack install
 
 # Run the test suite.
 stack test
@@ -42,7 +38,3 @@ stack bench
 # Generate documentation.
 stack haddock
 ```
-
-Thanks again, and happy hacking!
-
-[wunderlist-to-warrior]: https://github.com/githubuser/wunderlist-to-warrior
