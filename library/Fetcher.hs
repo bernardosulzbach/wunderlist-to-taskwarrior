@@ -2,10 +2,7 @@
 
 module Fetcher where
 
-import           Data.Aeson
 import qualified Data.ByteString.Char8 as C8
-import qualified Data.Map              as Map
-import qualified Data.Text             as Text
 import           Network.HTTP.Simple
 import qualified User
 import qualified Wunderlist.List

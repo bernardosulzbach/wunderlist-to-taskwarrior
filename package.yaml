@@ -19,9 +19,10 @@ executables:
   wunderlist-to-warrior:
     dependencies:
     - base
-    - wunderlist-to-warrior
+    - aeson
     - aeson-pretty
     - bytestring
+    - wunderlist-to-warrior
     ghc-options:
     - -rtsopts
     - -threaded

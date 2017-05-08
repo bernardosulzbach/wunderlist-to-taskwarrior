@@ -1,12 +1,14 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+import           Data.Aeson
 import           Data.Aeson.Encode.Pretty
-import qualified Data.ByteString.Lazy     as LBS
+import qualified Data.ByteString.Lazy.Char8 as CLBS
 import qualified Fetcher
 import qualified Tokens
 import qualified User
 
-printPretty thing = LBS.putStrLn $ encodePretty thing
+printPretty :: ToJSON a => a -> IO ()
+printPretty thing = CLBS.putStrLn $ encodePretty thing
 
 main :: IO ()
 main = do
