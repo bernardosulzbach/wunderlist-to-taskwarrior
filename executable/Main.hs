@@ -1,8 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+import           Data.Aeson.Encode.Pretty
+import qualified Data.ByteString.Lazy     as LBS
 import qualified Fetcher
 import qualified Tokens
 import qualified User
+
+printPretty thing = LBS.putStrLn $ encodePretty thing
 
 main :: IO ()
 main = do
@@ -10,11 +14,11 @@ main = do
   case eitherTokens of
     Left errorMessage -> putStrLn errorMessage
     Right tokens -> do
-      print tokens
+      printPretty tokens
       let user = User.fromTokens tokens
       lists <- Fetcher.fetchLists user
-      print lists
+      printPretty lists
       inbox <- Fetcher.fetchInbox user
-      print inbox
+      printPretty inbox
       inboxTasks <- Fetcher.fetchTasks user inbox
-      print inboxTasks
+      printPretty inboxTasks
