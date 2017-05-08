@@ -4,7 +4,7 @@
 module Tokens where
 
 import           Data.Aeson
-import           Data.ByteString.Lazy as LBS
+import qualified Data.ByteString.Lazy as LBS
 import           GHC.Generics
 
 data Tokens = Tokens { clientId :: String, clientSecret :: String, accessToken :: String }

@@ -2,10 +2,8 @@
 
 module Fetcher where
 
-import           Control.Monad.Catch
 import           Data.Aeson
 import qualified Data.ByteString.Char8 as C8
-import qualified Data.ByteString.Lazy  as LBS
 import qualified Data.Map              as Map
 import qualified Data.Text             as Text
 import           Network.HTTP.Simple
@@ -43,9 +41,8 @@ fetchInbox user = do
 
 fetchTasks :: User.User -> Wunderlist.List.List -> IO [Wunderlist.Task.Task]
 fetchTasks user list = do
-  let listId = Wunderlist.List.id list
   let baseRequest = fillRequest user tasksRequest
-  let requestBody = Map.fromList [("list_id" :: Text.Text, listId)]
-  let request = setRequestBodyJSON requestBody request
+  let listId = Just (C8.pack (show (Wunderlist.List.id list)))
+  let request = setRequestQueryString [("list_id", listId)] baseRequest
   response <- httpJSON request
   return (getResponseBody response :: [Wunderlist.Task.Task])
