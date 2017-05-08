@@ -19,6 +19,6 @@ getDefaultFilename = "tokens.json"
 
 getDefaultTokens :: IO (Either String Tokens)
 getDefaultTokens = do
-  json <- LBS.readFile getDefaultFilename
-  let decoded = eitherDecode json
+  defaultFile <- LBS.readFile getDefaultFilename
+  let decoded = eitherDecode defaultFile
   return decoded

@@ -2,22 +2,20 @@
 
 module Fetcher where
 
-import           Data.Aeson
-import           Data.ByteString.Lazy as LBS
-import           Network.HTTP.Client
-import           User
+import qualified Data.ByteString.Char8 as C8
+import           Network.HTTP.Simple
+import qualified User
+import qualified Wunderlist
 
-fetchLists :: User -> [String]
-fetchLists user = []
+baseFetchListsRequest :: Request
+baseFetchListsRequest = "GET http://a.wunderlist.com/api/v1/lists"
 
-buildRequest :: String -> RequestBody -> IO Request
-buildRequest url body = do
-  nakedRequest <- parseRequest url
-  return (nakedRequest { method = "POST", requestBody = body })
-
-send :: RequestBody -> IO LBS.ByteString
-send s = do
-  request <- buildRequest "http://httpbin.org/post" s
-  manager <- newManager defaultManagerSettings
-  response <- httpLbs request manager
-  return (responseBody response)
+fetchLists :: User.User -> IO ()
+fetchLists user = do
+  let request = setRequestHeader "X-Access-Token" [C8.pack $ User.accessToken user] $ setRequestHeader
+                                                                                        "X-Client-ID"
+                                                                                        [ C8.pack $ User.clientId
+                                                                                                      user
+                                                                                        ] $ baseFetchListsRequest
+  response <- httpJSON request
+  print $ (getResponseBody response :: [Wunderlist.List])

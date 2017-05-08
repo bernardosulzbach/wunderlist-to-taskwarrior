@@ -1,14 +1,15 @@
--- It is generally a good idea to keep all your business logic in your library and only use it in
--- the executable. Doing so allows others to use what you wrote in their libraries.
 {-# LANGUAGE OverloadedStrings #-}
 
-import           Data.ByteString.Lazy.Char8 as LBSC
 import qualified Fetcher
 import qualified Tokens
+import qualified User
 
 main :: IO ()
 main = do
-  tokens <- Tokens.getDefaultTokens
-  print tokens
-  bs <- Fetcher.send "Hello, World!"
-  LBSC.putStrLn bs
+  eitherTokens <- Tokens.getDefaultTokens
+  case eitherTokens of
+    Left errorMessage -> putStrLn errorMessage
+    Right tokens -> do
+      print tokens
+      let user = User.fromTokens tokens
+      Fetcher.fetchLists user
