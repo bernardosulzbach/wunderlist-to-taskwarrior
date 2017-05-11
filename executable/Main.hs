@@ -6,6 +6,7 @@ import qualified Data.ByteString.Lazy.Char8 as CLBS
 import qualified Fetcher
 import qualified Tokens
 import qualified User
+import qualified Warrior
 
 printPretty :: ToJSON a => a -> IO ()
 printPretty thing = CLBS.putStrLn $ encodePretty thing
@@ -24,3 +25,5 @@ main = do
       printPretty inbox
       inboxTasks <- Fetcher.fetchTasks user inbox
       printPretty inboxTasks
+      result <- Warrior.addTask "Testing the addTask function"
+      putStrLn result

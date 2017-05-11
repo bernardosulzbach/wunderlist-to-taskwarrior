@@ -48,10 +48,10 @@ library:
   - filepath
   - http-client
   - http-conduit
-  - process
   - persistent
   - persistent-sqlite
   - persistent-template
+  - process
   - text
   source-dirs: library
 license: MIT
