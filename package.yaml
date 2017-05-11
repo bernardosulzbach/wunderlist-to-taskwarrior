@@ -39,8 +39,8 @@ ghc-options: -Wall
 github: githubuser/wunderlist-to-warrior
 library:
   dependencies:
-  - base
   - aeson
+  - base
   - bytestring
   - containers
   - directory
@@ -48,6 +48,10 @@ library:
   - filepath
   - http-client
   - http-conduit
+  - process
+  - persistent
+  - persistent-sqlite
+  - persistent-template
   - text
   source-dirs: library
 license: MIT
