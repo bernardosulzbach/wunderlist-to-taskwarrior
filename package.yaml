@@ -19,7 +19,6 @@ executables:
   wunderlist-to-taskwarrior:
     dependencies:
     - aeson
-    - aeson-pretty
     - base
     - bytestring
     - persistent
@@ -43,6 +42,7 @@ github: mafagafogigante/wunderlist-to-taskwarrior
 library:
   dependencies:
   - aeson
+  - aeson-pretty
   - base
   - bytestring
   - containers

@@ -8,23 +8,17 @@
 {-# LANGUAGE TemplateHaskell            #-}
 {-# LANGUAGE TypeFamilies               #-}
 
-import           Control.Monad.IO.Class     (liftIO)
-import           Data.Aeson
-import           Data.Aeson.Encode.Pretty
-import qualified Data.ByteString.Lazy.Char8 as CLBS
+import           Control.Monad.IO.Class  (liftIO)
 import qualified Data.Text
 import           Database.Persist
 import           Database.Persist.Sqlite
 import qualified Fetcher
 import qualified Filesystem
 import qualified Relation
+import qualified Taskwarrior
 import qualified Tokens
 import qualified User
-import qualified Taskwarrior
 import qualified Wunderlist.Task
-
-printPretty :: ToJSON a => a -> IO ()
-printPretty thing = CLBS.putStrLn $ encodePretty thing
 
 -- This is a possible bottleneck: a new SQLite connection is opened for each task.
 --
@@ -53,13 +47,7 @@ main = do
   case eitherTokens of
     Left errorMessage -> putStrLn errorMessage
     Right tokens -> do
-      printPretty tokens
       let user = User.fromTokens tokens
-      lists <- Fetcher.fetchLists user
-      printPretty lists
       inbox <- Fetcher.fetchInbox user
-      printPretty inbox
       inboxTasks <- Fetcher.fetchTasks user inbox
-      printPretty inboxTasks
       mapM_ ensureAdded inboxTasks
-      putStrLn "Done."
