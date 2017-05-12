@@ -5,9 +5,8 @@ module Tokens where
 
 import           Data.Aeson
 import qualified Data.ByteString.Lazy as LBS
+import qualified Filesystem
 import           GHC.Generics
-import           System.Directory
-import           System.FilePath
 
 data Tokens = Tokens { clientId :: String, clientSecret :: String, accessToken :: String }
   deriving (Generic, Show)
@@ -16,15 +15,14 @@ instance FromJSON Tokens
 
 instance ToJSON Tokens
 
-getDefaultFilename :: IO FilePath
-getDefaultFilename = do
-  home <- getHomeDirectory
-  let path = joinPath [home, ".tokens.json"]
-  return path
+tokensFilename :: String
+tokensFilename = "tokens.json"
+
+getTokensFilePath :: IO FilePath
+getTokensFilePath = Filesystem.getFilePathForFilename tokensFilename
 
 getDefaultTokens :: IO (Either String Tokens)
 getDefaultTokens = do
-  filename <- getDefaultFilename
-  defaultFile <- LBS.readFile filename
-  let decoded = eitherDecode defaultFile
-  return decoded
+  path <- getTokensFilePath
+  file <- LBS.readFile path
+  return (eitherDecode file)

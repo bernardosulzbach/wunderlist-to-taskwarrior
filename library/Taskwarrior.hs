@@ -1,4 +1,4 @@
-module Warrior where
+module Taskwarrior where
 
 import           Data.Char
 import           Data.List

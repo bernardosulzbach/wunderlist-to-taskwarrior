@@ -2,10 +2,10 @@
 # Cabal file when you run `stack build`. See the hpack website for help with
 # this file: <https://github.com/sol/hpack>.
 benchmarks:
-  wunderlist-to-warrior-benchmarks:
+  wunderlist-to-taskwarrior-benchmarks:
     dependencies:
     - base
-    - wunderlist-to-warrior
+    - wunderlist-to-taskwarrior
     - criterion
     ghc-options:
     - -rtsopts
@@ -16,13 +16,17 @@ benchmarks:
 category: Other
 description: Fetch your tasks from Wunderlist and add them to TaskWarrior
 executables:
-  wunderlist-to-warrior:
+  wunderlist-to-taskwarrior:
     dependencies:
-    - base
     - aeson
     - aeson-pretty
+    - base
     - bytestring
-    - wunderlist-to-warrior
+    - persistent
+    - persistent-sqlite
+    - persistent-template
+    - text
+    - wunderlist-to-taskwarrior
     ghc-options:
     - -rtsopts
     - -threaded
@@ -35,7 +39,7 @@ extra-source-files:
 - README.md
 - stack.yaml
 ghc-options: -Wall
-github: mafagafogigante/wunderlist-to-warrior
+github: mafagafogigante/wunderlist-to-taskwarrior
 library:
   dependencies:
   - aeson
@@ -55,13 +59,13 @@ library:
   source-dirs: library
 license: MIT
 maintainer: Bernardo Sulzbach
-name: wunderlist-to-warrior
+name: wunderlist-to-taskwarrior
 synopsis: Fetch your tasks from Wunderlist and add them to TaskWarrior
 tests:
-  wunderlist-to-warrior-test-suite:
+  wunderlist-to-taskwarrior-test-suite:
     dependencies:
     - base
-    - wunderlist-to-warrior
+    - wunderlist-to-taskwarrior
     - tasty
     - tasty-hspec
     ghc-options:

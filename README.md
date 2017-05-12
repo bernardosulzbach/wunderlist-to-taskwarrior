@@ -1,40 +1,41 @@
-# Wunderlist to Warrior
+# Wunderlist to Taskwarrior
+
+A simple project that fetches your tasks from Wunderlist and inserts them into
+TaskWarrior. Can be run by the operating system to keep Taskwarrior up-to-date.
 
 ## Configuration
 
+### Program directory
+
+All the configuration and persistent data resides in the program directory.
+
+```
+$HOME/.wunderlist-to-taskwarrior/
+```
+
+### Wunderlist API
+
 You must get an API key from Wunderlist before using this for your own stuff.
 
-Create a file at `~/.tokens.json` file with the following contents:
+Create the `tokens.json` file in the program directory with the following contents:
 
 ```javascript
 {
-   "clientId":     "6502................",
-   "clientSecret": "2684........................................................",
-   "accessToken":  "bcc4........................................................"
+   "clientId": "....................",
+   "clientSecret": "............................................................",
+   "accessToken": "............................................................"
 }
 ```
 
-Note that you must obtain these values for yourself, the dots are just there to
-give you an idea of how long each field is.
+> You must obtain these values for yourself, the dots are just there to give you
+> an idea of how long each field is.
 
 ## Installation
 
-A simple project that fetches your tasks from Wunderlist and inserts them into
-TaskWarrior.
-
 ```sh
-# Build the project.
-stack build
-
-# Install the executable.
+# Build and install the executable.
 stack install
 
-# Run the test suite.
-stack test
-
-# Run the benchmarks.
-stack bench
-
-# Generate documentation.
-stack haddock
+# Run the executable.
+wunderlist-to-taskwarrior
 ```
