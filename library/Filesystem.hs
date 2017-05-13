@@ -9,6 +9,9 @@ programDirectory = ".wunderlist-to-taskwarrior"
 databaseFilename :: String
 databaseFilename = "db.sqlite3"
 
+logFilename :: String
+logFilename = "log.txt"
+
 getFilePathForFilename :: String -> IO FilePath
 getFilePathForFilename filename = do
   home <- getHomeDirectory
@@ -16,3 +19,6 @@ getFilePathForFilename filename = do
 
 databaseFilePath :: IO FilePath
 databaseFilePath = getFilePathForFilename databaseFilename
+
+logFilePath :: IO FilePath
+logFilePath = getFilePathForFilename logFilename

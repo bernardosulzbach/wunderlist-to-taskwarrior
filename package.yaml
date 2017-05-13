@@ -18,13 +18,7 @@ description: Fetch your tasks from Wunderlist and add them to TaskWarrior
 executables:
   wunderlist-to-taskwarrior:
     dependencies:
-    - aeson
     - base
-    - bytestring
-    - persistent
-    - persistent-sqlite
-    - persistent-template
-    - text
     - wunderlist-to-taskwarrior
     ghc-options:
     - -rtsopts
@@ -51,6 +45,8 @@ library:
   - filepath
   - http-client
   - http-conduit
+  - logging
+  - monad-control
   - persistent
   - persistent-sqlite
   - persistent-template
