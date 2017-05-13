@@ -26,7 +26,9 @@ import qualified Wunderlist.Task
 -- This is a possible bottleneck: a new SQLite connection is opened for each task.
 --
 -- In practice, however, this does not seem to hinder performance too much.
-ensureAdded :: Wunderlist.Task.Task -> IO ()
+--
+-- Returns True if the task was added by this call.
+ensureAdded :: Wunderlist.Task.Task -> IO Bool
 ensureAdded task = do
   databasePath <- Filesystem.databaseFilePath
   runSqlite (Data.Text.pack databasePath) $ do
@@ -36,9 +38,9 @@ ensureAdded task = do
       then do
         uuid <- liftIO $ Taskwarrior.addTask taskTitle
         _ <- insert $ Relation.Relation taskId uuid
-        return ()
+        return True
       else do
-        return ()
+        return False
 
   where
     taskId = Wunderlist.Task.id task
@@ -48,6 +50,12 @@ logTaskInformation :: [Wunderlist.Task.Task] -> IO ()
 logTaskInformation inboxTasks = Logger.log message
   where
     string = "Inbox task count is " ++ (show (length inboxTasks)) ++ "."
+    message = Data.Text.pack string
+
+logAddedInformation :: [Bool] -> IO ()
+logAddedInformation added = Logger.log message
+  where
+    string = "Added " ++ (show (length (filter id added))) ++ " new tasks."
     message = Data.Text.pack string
 
 synchronizeAll :: IO ()
@@ -60,4 +68,5 @@ synchronizeAll = Logger.withDefaultLogging $ do
       inbox <- Fetcher.fetchInbox user
       inboxTasks <- Fetcher.fetchTasks user inbox
       logTaskInformation inboxTasks
-      mapM_ ensureAdded inboxTasks
+      added <- mapM ensureAdded inboxTasks
+      logAddedInformation added
