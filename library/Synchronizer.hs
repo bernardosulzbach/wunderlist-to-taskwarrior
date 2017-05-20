@@ -16,8 +16,11 @@ import           Database.Persist
 import           Database.Persist.Sqlite
 import qualified Fetcher
 import qualified Filesystem
+import           Formatting
+import           Formatting.Clock
 import qualified Logger
 import qualified Relation
+import           System.Clock
 import qualified Taskwarrior
 import qualified Tokens
 import qualified User
@@ -49,17 +52,18 @@ ensureAdded task = do
 logTaskInformation :: [Wunderlist.Task.Task] -> IO ()
 logTaskInformation inboxTasks = Logger.log message
   where
-    string = "Inbox task count is " ++ (show (length inboxTasks)) ++ "."
-    message = Data.Text.pack string
+    logString = "Inbox task count is " ++ (show (length inboxTasks)) ++ "."
+    message = Data.Text.pack logString
 
 logAddedInformation :: [Bool] -> IO ()
 logAddedInformation added = Logger.log message
   where
-    string = "Added " ++ (show (length (filter id added))) ++ " new tasks."
-    message = Data.Text.pack string
+    logString = "Added " ++ (show (length (filter id added))) ++ " new tasks."
+    message = Data.Text.pack logString
 
 synchronizeAll :: IO ()
 synchronizeAll = Logger.withDefaultLogging $ do
+  processStart <- getTime Monotonic
   eitherTokens <- Tokens.getDefaultTokens
   case eitherTokens of
     Left errorMessage -> putStrLn errorMessage
@@ -68,5 +72,10 @@ synchronizeAll = Logger.withDefaultLogging $ do
       inbox <- Fetcher.fetchInbox user
       inboxTasks <- Fetcher.fetchTasks user inbox
       logTaskInformation inboxTasks
+      updateStart <- getTime Monotonic
       added <- mapM ensureAdded inboxTasks
+      updateEnd <- getTime Monotonic
       logAddedInformation added
+      Logger.log (sformat ("Finished updating after " % timeSpecs % ".") updateStart updateEnd)
+      processEnd <- getTime Monotonic
+      Logger.log (sformat ("Finished running after " % timeSpecs % ".") processStart processEnd)
