@@ -1,5 +1,7 @@
 # Wunderlist to Taskwarrior
 
+[![Build Status](https://travis-ci.org/mafagafogigante/wunderlist-to-taskwarrior.svg?branch=master)](https://travis-ci.org/mafagafogigante/wunderlist-to-taskwarrior)
+
 A simple project that fetches your tasks from Wunderlist and inserts them into
 TaskWarrior. Can be run by the operating system to keep Taskwarrior up-to-date.
 
