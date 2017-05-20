@@ -39,10 +39,12 @@ library:
   - aeson-pretty
   - base
   - bytestring
+  - clock
   - containers
   - directory
   - exceptions
   - filepath
+  - formatting
   - http-client
   - http-conduit
   - logging
