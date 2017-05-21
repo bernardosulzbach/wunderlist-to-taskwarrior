@@ -4,7 +4,7 @@ module Fetcher where
 
 import           Data.Aeson
 import qualified Data.ByteString.Char8 as C8
-import qualified Data.Text.Lazy        as T
+import qualified Data.Text.Lazy        as L
 import           Formatting
 import           Formatting.Clock
 import qualified Logger
@@ -21,10 +21,9 @@ tasksRequest :: Request
 tasksRequest = "GET http://a.wunderlist.com/api/v1/tasks"
 
 -- Works like httpJSON, but logs request duration from start to finish.
-httpJSONLogged :: FromJSON a => Request -> String -> IO (Response a)
-httpJSONLogged request description = do
+httpJSONLogged :: FromJSON a => Request -> L.Text -> IO (Response a)
+httpJSONLogged request info = do
   start <- getTime Monotonic
-  let info = T.pack description
   Logger.log (sformat ("Started " % text % ".") info)
   response <- httpJSON request
   end <- getTime Monotonic
@@ -49,6 +48,8 @@ fetchTasks :: User.User -> Wunderlist.List.List -> IO [Wunderlist.Task.Task]
 fetchTasks user list = do
   let baseRequest = fillRequest user tasksRequest
   let listId = Just (C8.pack (show (Wunderlist.List.id list)))
+  let listTitle = L.pack (Wunderlist.List.title list)
   let request = setRequestQueryString [("list_id", listId)] baseRequest
-  response <- httpJSONLogged request "fetching tasks"
+  let logMessage = format ("fetching tasks for \"" % text % "\"") listTitle
+  response <- httpJSONLogged request logMessage
   return (getResponseBody response :: [Wunderlist.Task.Task])
