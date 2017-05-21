@@ -10,9 +10,9 @@ import           Text.Read
 -- Adds the provided description and returns the task UUID.
 --
 -- If the task could not be added, returns the empty string.
-addTask :: String -> IO String
-addTask description = do
-  outputTuple <- readProcessWithExitCode "task" ["add", description] ""
+addTask :: String -> String -> IO String
+addTask project description = do
+  outputTuple <- readProcessWithExitCode "task" ["add", description, "project:" ++ project] ""
   -- Could handle errors, but we can't really fix anything from here.
   let (code, output, _) = outputTuple
   if (code == ExitSuccess)
