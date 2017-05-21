@@ -47,8 +47,8 @@ library:
   - formatting
   - http-client
   - http-conduit
-  - logging
   - monad-control
+  - monad-logger
   - persistent
   - persistent-sqlite
   - persistent-template

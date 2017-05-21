@@ -1,23 +1,17 @@
 {-# LANGUAGE FlexibleContexts      #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE TemplateHaskell       #-}
 
 module Logger where
 
-import           Control.Logging
+import           Control.Monad.Logger
 import qualified Data.Text
 import qualified Filesystem
 
 formatString :: String
 formatString = "%Y-%m-%d %H:%M:%S.%q"
 
-withDefaultLogging :: IO a -> IO a
-withDefaultLogging a = do
-  logFilePath <- Filesystem.logFilePath
-  withLogging <- withFileLogging logFilePath $ do
-                   setLogTimeFormat formatString
-                   result <- a
-                   return result
-  return withLogging
-
 log :: Data.Text.Text -> IO ()
-log a = Control.Logging.log a
+log a = do
+  logFilePath <- Filesystem.logFilePath
+  runFileLoggingT logFilePath ($(logInfo) a)

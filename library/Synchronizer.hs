@@ -85,18 +85,18 @@ synchronizeList (project, tasks) = do
   return $ length (filter id added)
 
 synchronizeAll :: IO ()
-synchronizeAll = Logger.withDefaultLogging $ do
+synchronizeAll = do
   processStart <- getTime Monotonic
   eitherTokens <- Tokens.getDefaultTokens
   case eitherTokens of
     Left errorMessage -> putStrLn errorMessage
     Right tokens -> do
-      updateStart <- getTime Monotonic
       let user = User.fromTokens tokens
       lists <- Fetcher.fetchLists user
       let preparedLists = prepareLists lists
       -- Fetch each list and use it to update Taskwarrior.
       retrievedTasks <- mapM (retrieveTasks user) preparedLists
+      updateStart <- getTime Monotonic
       counters <- mapM synchronizeList retrievedTasks
       logAddedInformation (sum counters)
       updateEnd <- getTime Monotonic
