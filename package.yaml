@@ -54,6 +54,7 @@ library:
   - persistent-template
   - process
   - text
+  - time
   source-dirs: library
 license: MIT
 maintainer: Bernardo Sulzbach

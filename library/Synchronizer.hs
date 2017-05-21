@@ -12,12 +12,14 @@ module Synchronizer where
 
 import           Control.Monad.IO.Class  (liftIO)
 import qualified Data.Text
+import           Data.Time.LocalTime
 import           Database.Persist
 import           Database.Persist.Sqlite
 import qualified Fetcher
 import qualified Filesystem
 import           Formatting
 import           Formatting.Clock
+import           Formatting.Time
 import qualified Logger
 import qualified Relation
 import           System.Clock
@@ -86,7 +88,9 @@ synchronizeList (project, tasks) = do
 
 synchronizeAll :: IO ()
 synchronizeAll = do
+  zonedTime <- getZonedTime
   processStart <- getTime Monotonic
+  Logger.log (sformat ("Started running at " % dateDash % " " % hms % ".") zonedTime zonedTime)
   eitherTokens <- Tokens.getDefaultTokens
   case eitherTokens of
     Left errorMessage -> putStrLn errorMessage
