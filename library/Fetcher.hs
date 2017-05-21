@@ -45,14 +45,6 @@ fetchLists user = do
   response <- httpJSONLogged request "fetching all lists"
   return (getResponseBody response :: [Wunderlist.List.List])
 
-fetchInbox :: User.User -> IO Wunderlist.List.List
-fetchInbox user = do
-  lists <- fetchLists user
-  return $ head $ filter nameIsInbox lists
-
-  where
-    nameIsInbox list = (Wunderlist.List.title list) == "inbox"
-
 fetchTasks :: User.User -> Wunderlist.List.List -> IO [Wunderlist.Task.Task]
 fetchTasks user list = do
   let baseRequest = fillRequest user tasksRequest

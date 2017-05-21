@@ -64,7 +64,7 @@ titleDoesNotStartWith prefix list = take (length prefix) title /= prefix
 separateInbox :: [Wunderlist.List.List] -> (Wunderlist.List.List, [Wunderlist.List.List])
 separateInbox lists = (head (filter isInbox lists), filter (not . isInbox) lists)
   where
-    isInbox list = Wunderlist.List.title list == "inbox"
+    isInbox = Wunderlist.List.isInbox
 
 -- Filters and extracts the Taskwarrior project name for a Wunderlist list.
 prepareLists :: [Wunderlist.List.List] -> [(String, Wunderlist.List.List)]
