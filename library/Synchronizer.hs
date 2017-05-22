@@ -10,7 +10,9 @@
 
 module Synchronizer where
 
-import           Control.Monad.IO.Class  (liftIO)
+import           Control.Concurrent.Async
+import           Control.Concurrent.MVar
+import           Control.Monad.IO.Class   (liftIO)
 import qualified Data.Text
 import           Data.Time.LocalTime
 import           Database.Persist
@@ -76,9 +78,9 @@ prepareLists lists = ("", inbox) : pairedLists
     goodLists = filter (titleDoesNotStartWith "!") otherLists
     pairedLists = zip (map Wunderlist.List.title goodLists) goodLists
 
-retrieveTasks :: User.User -> (String, Wunderlist.List.List) -> IO (String, [Wunderlist.Task.Task])
-retrieveTasks user (project, list) = do
-  tasks <- Fetcher.fetchTasks user list
+retrieveTasks :: MVar () -> User.User -> (String, Wunderlist.List.List) -> IO (String, [Wunderlist.Task.Task])
+retrieveTasks mvar user (project, list) = do
+  tasks <- Fetcher.fetchTasks mvar user list
   return (project, tasks)
 
 synchronizeList :: (String, [Wunderlist.Task.Task]) -> IO Int
@@ -95,11 +97,12 @@ synchronizeAll = do
   case eitherTokens of
     Left errorMessage -> putStrLn errorMessage
     Right tokens -> do
+      mvar <- newEmptyMVar
       let user = User.fromTokens tokens
-      lists <- Fetcher.fetchLists user
+      lists <- Fetcher.fetchLists mvar user
       let preparedLists = prepareLists lists
       -- Fetch each list and use it to update Taskwarrior.
-      retrievedTasks <- mapM (retrieveTasks user) preparedLists
+      retrievedTasks <- mapConcurrently (retrieveTasks mvar user) preparedLists
       updateStart <- getTime Monotonic
       counters <- mapM synchronizeList retrievedTasks
       logAddedInformation (sum counters)

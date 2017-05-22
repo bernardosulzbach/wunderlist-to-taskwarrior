@@ -37,6 +37,7 @@ library:
   dependencies:
   - aeson
   - aeson-pretty
+  - async
   - base
   - bytestring
   - clock
