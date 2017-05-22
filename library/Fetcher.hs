@@ -16,10 +16,10 @@ import qualified Wunderlist.List
 import qualified Wunderlist.Task
 
 listsRequest :: Request
-listsRequest = "GET http://a.wunderlist.com/api/v1/lists"
+listsRequest = "GET https://a.wunderlist.com/api/v1/lists"
 
 tasksRequest :: Request
-tasksRequest = "GET http://a.wunderlist.com/api/v1/tasks"
+tasksRequest = "GET https://a.wunderlist.com/api/v1/tasks"
 
 -- Works like httpJSON, but logs request duration from start to finish.
 httpJSONLogged :: FromJSON a => MVar () -> Request -> L.Text -> IO (Response a)
