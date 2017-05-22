@@ -7,6 +7,10 @@ TaskWarrior. Can be run by the operating system to keep Taskwarrior up-to-date.
 
 ## Configuration
 
+Wunderlist lists starting with '!' are **never fetched for synchronization**.
+
+All communication is done via HTTPS.
+
 ### Program directory
 
 All the configuration and persistent data resides in the program directory.
@@ -40,4 +44,12 @@ stack install
 
 # Run the executable.
 wunderlist-to-taskwarrior
+
+# Add the executable to your crontab.
+# Make sure to use the path for the executable in your machine.
+(crontab -l; echo "* * * * * /home/mg/.local/bin/wunderlist-to-taskwarrior") | crontab
 ```
+
+In practice, the program finishes in less than two seconds.
+
+If you have hundreds of lists or many new tasks it may take longer.
