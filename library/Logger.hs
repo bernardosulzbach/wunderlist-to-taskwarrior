@@ -3,7 +3,7 @@
 {-# LANGUAGE OverloadedStrings     #-}
 {-# LANGUAGE TemplateHaskell       #-}
 
-module Logger (Logger.log, Logger.logS) where
+module Logger (Logger.trimByteString, Logger.log, Logger.logS) where
 
 import           Control.Concurrent.MVar
 import           Control.Monad.Logger
@@ -26,18 +26,25 @@ getFileSize path = do
   stat <- getFileStatus path
   return (fileSize stat)
 
+trimByteString :: B.ByteString -> FileOffset -> B.ByteString
+trimByteString bytes size = cleared
+  where
+    intSize = fromIntegral size :: Int
+    -- The minimum number of bytes we have to drop.
+    minDrop = (B.length bytes) - intSize
+    -- Drop the minimum minus one.
+    trimmed = B.drop (max 0 (minDrop - 1)) bytes
+    -- Drop until you dropped a '\n'.
+    newline = head (B.unpack "\n")
+    dropped = B.dropWhile (/= newline) trimmed
+    cleared = if (B.null dropped)
+                then dropped
+                else B.tail dropped
+
 effectivelyTrim :: FilePath -> FileOffset -> IO ()
 effectivelyTrim path size = do
   bytes <- B.readFile path
-  let intSize = fromIntegral size :: Int
-  -- The minimum number of bytes we have to drop.
-  let minDrop = (B.length bytes) - intSize
-  -- Drop the minimum minus one.
-  let trimmed = B.drop (minDrop - 1) bytes
-  -- Drop until you dropped a '\n'.
-  let newline = head (B.unpack "\n")
-  let cleared = B.tail (B.dropWhile (/= newline) trimmed)
-  B.writeFile path cleared
+  B.writeFile path (trimByteString bytes size)
 
 -- Trims the log file if needed.
 trim :: FilePath -> FileOffset -> FileOffset -> IO ()
