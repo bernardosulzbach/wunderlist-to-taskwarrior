@@ -57,7 +57,7 @@ trim path maximumSize trimmed = do
 log :: T.Text -> IO ()
 log a = do
   logFilePath <- Filesystem.logFilePath
-  runFileLoggingT logFilePath ($(logInfo) a)
+  runFileLoggingT logFilePath (logInfoN a)
   trim logFilePath maximumLogFileSize trimmedLogFileSize
 
 logS :: MVar () -> T.Text -> IO ()
