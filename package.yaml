@@ -66,9 +66,12 @@ tests:
   wunderlist-to-taskwarrior-test-suite:
     dependencies:
     - base
+    - bytestring
     - wunderlist-to-taskwarrior
     - tasty
-    - tasty-hspec
+    - tasty-quickcheck
+    - quickcheck-instances
+    - unix
     ghc-options:
     - -rtsopts
     - -threaded

@@ -1,16 +1,29 @@
--- Tasty makes it easy to test your code. It is a test framework that can combine many different
--- types of tests into one suite. See its website for help: <http://documentup.com/feuerbach/tasty>.
-import qualified Test.Tasty
--- Hspec is one of the providers for Tasty. It provides a nice syntax for writing tests. Its website
--- has more info: <https://hspec.github.io>.
-import           Test.Tasty.Hspec
+import           Control.Monad
+import qualified Data.ByteString           as B
+import           Logger
+import           System.Posix
+import           Test.QuickCheck.Instances ()
+import           Test.Tasty
+import           Test.Tasty.QuickCheck     as QC
 
 main :: IO ()
-main = do
-  test <- testSpec "wunderlist-to-warrior" spec
-  Test.Tasty.defaultMain test
+main = defaultMain $ testGroup "trimByteString" trimByteStringProperties
 
-spec :: Spec
-spec = parallel $ do
-  it "is trivially true" $ do
-    True `shouldBe` True
+newtype ACOff = ACOff COff
+  deriving (Show)
+
+instance Arbitrary ACOff where
+  arbitrary = ACOff `liftM` (liftM (fromIntegral :: Int -> COff) (choose (0, 100)))
+
+unACOff :: ACOff -> COff
+unACOff (ACOff off) = off
+
+trimByteStringProperties :: [TestTree]
+trimByteStringProperties =
+  [QC.testProperty "upper limit is respected" trimByteStringShouldRespectTheUpperLimit]
+
+trimByteStringShouldRespectTheUpperLimit :: B.ByteString -> ACOff -> Bool
+trimByteStringShouldRespectTheUpperLimit b s = trimmedSize <= asCOff
+  where
+    asCOff = unACOff s
+    trimmedSize = fromIntegral (B.length (Logger.trimByteString b asCOff)) :: COff
