@@ -15,7 +15,7 @@ before_install:
 
 script:
 - stack --no-terminal build
-- stack --no-terminal test
+- stack --no-terminal test --test-arguments "--quickcheck-tests 1000"
 
 cache:
   directories:
